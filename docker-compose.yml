@@ -1,0 +1,30 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_DATABASE: NotificationSystemDesign_Dev
+    ports:
+      - "27017:27017"  # Expose MongoDB port
+    volumes:
+      - mongo-data:/data/db  # Persist data
+    networks:
+      - my-network
+
+  nodeapp:
+    build: .
+    ports:
+      - "4000:4000"  # Expose the Node.js app port
+    env_file:
+      - .env
+    depends_on:
+      - mongodb  # Ensure the database starts before the app
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  mongo-data:  # Define volume to persist MongoDB data
